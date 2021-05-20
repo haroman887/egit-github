@@ -1,9 +1,11 @@
 /*******************************************************************************
  *  Copyright (c) 2011 GitHub Inc.
  *  All rights reserved. This program and the accompanying materials
- *  are made available under the terms of the Eclipse Public License v1.0
+ *  are made available under the terms of the Eclipse Public License 2.0
  *  which accompanies this distribution, and is available at
- *  http://www.eclipse.org/legal/epl-v10.html
+ *  https://www.eclipse.org/legal/epl-2.0/
+ *
+ *  SPDX-License-Identifier: EPL-2.0
  *
  *  Contributors:
  *    Kevin Sawicki (GitHub Inc.) - initial API and implementation
@@ -72,6 +74,7 @@ public class GistConnector extends RepositoryConnector {
 	/**
 	 * @see org.eclipse.mylyn.tasks.core.AbstractRepositoryConnector#getTaskDataHandler()
 	 */
+	@Override
 	public AbstractTaskDataHandler getTaskDataHandler() {
 		return dataHandler;
 	}
@@ -79,6 +82,7 @@ public class GistConnector extends RepositoryConnector {
 	/**
 	 * @see org.eclipse.mylyn.tasks.core.AbstractRepositoryConnector#getTaskAttachmentHandler()
 	 */
+	@Override
 	public AbstractTaskAttachmentHandler getTaskAttachmentHandler() {
 		return attachmentHandler;
 	}
@@ -86,6 +90,7 @@ public class GistConnector extends RepositoryConnector {
 	/**
 	 * @see org.eclipse.mylyn.tasks.core.AbstractRepositoryConnector#canCreateNewTask(org.eclipse.mylyn.tasks.core.TaskRepository)
 	 */
+	@Override
 	public boolean canCreateNewTask(TaskRepository repository) {
 		// Gists are created from menu actions on files and text selections
 		return false;
@@ -94,6 +99,7 @@ public class GistConnector extends RepositoryConnector {
 	/**
 	 * @see org.eclipse.mylyn.tasks.core.AbstractRepositoryConnector#getConnectorKind()
 	 */
+	@Override
 	public String getConnectorKind() {
 		return KIND;
 	}
@@ -101,6 +107,7 @@ public class GistConnector extends RepositoryConnector {
 	/**
 	 * @see org.eclipse.mylyn.tasks.core.AbstractRepositoryConnector#getLabel()
 	 */
+	@Override
 	public String getLabel() {
 		return Messages.GistConnector_LabelConnector;
 	}
@@ -108,6 +115,7 @@ public class GistConnector extends RepositoryConnector {
 	/**
 	 * @see org.eclipse.mylyn.tasks.core.AbstractRepositoryConnector#getRepositoryUrlFromTaskUrl(java.lang.String)
 	 */
+	@Override
 	public String getRepositoryUrlFromTaskUrl(String taskFullUrl) {
 		int lastSlash = taskFullUrl.lastIndexOf('/');
 		return lastSlash >= 0 ? taskFullUrl.substring(0, lastSlash) : null;
@@ -117,6 +125,7 @@ public class GistConnector extends RepositoryConnector {
 	 * @see org.eclipse.mylyn.tasks.core.AbstractRepositoryConnector#getTaskData(org.eclipse.mylyn.tasks.core.TaskRepository,
 	 *      java.lang.String, org.eclipse.core.runtime.IProgressMonitor)
 	 */
+	@Override
 	public TaskData getTaskData(TaskRepository repository, String taskId,
 			IProgressMonitor monitor) throws CoreException {
 		GistService service = new GistService(createClient(repository));
@@ -144,6 +153,7 @@ public class GistConnector extends RepositoryConnector {
 	 *      org.eclipse.mylyn.tasks.core.sync.ISynchronizationSession,
 	 *      org.eclipse.core.runtime.IProgressMonitor)
 	 */
+	@Override
 	public IStatus performQuery(TaskRepository repository,
 			IRepositoryQuery query, TaskDataCollector collector,
 			ISynchronizationSession session, IProgressMonitor monitor) {

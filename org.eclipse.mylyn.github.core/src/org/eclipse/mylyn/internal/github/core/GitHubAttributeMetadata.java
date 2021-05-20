@@ -1,9 +1,11 @@
 /******************************************************************************
- *  Copyright (c) 2011 GitHub Inc.
+ *  Copyright (c) 2011, 2020 GitHub Inc. and others
  *  All rights reserved. This program and the accompanying materials
- *  are made available under the terms of the Eclipse Public License v1.0
+ *  are made available under the terms of the Eclipse Public License 2.0
  *  which accompanies this distribution, and is available at
- *  http://www.eclipse.org/legal/epl-v10.html
+ *  https://www.eclipse.org/legal/epl-2.0/
+ *
+ *  SPDX-License-Identifier: EPL-2.0
  *
  *  Contributors:
  *    Kevin Sawicki (GitHub Inc.) - initial API and implementation
@@ -27,7 +29,7 @@ public class GitHubAttributeMetadata {
 
 	/**
 	 * Create attribute metadata
-	 * 
+	 *
 	 * @param id
 	 * @param label
 	 * @param type
@@ -40,7 +42,7 @@ public class GitHubAttributeMetadata {
 
 	/**
 	 * Create attribute metadata
-	 * 
+	 *
 	 * @param id
 	 * @param label
 	 * @param type
@@ -54,7 +56,7 @@ public class GitHubAttributeMetadata {
 
 	/**
 	 * Create attribute metadata
-	 * 
+	 *
 	 * @param id
 	 * @param label
 	 * @param kind
@@ -117,7 +119,7 @@ public class GitHubAttributeMetadata {
 
 	/**
 	 * Create task attribute under root of task data
-	 * 
+	 *
 	 * @param data
 	 * @return created attribute
 	 */
@@ -127,7 +129,7 @@ public class GitHubAttributeMetadata {
 
 	/**
 	 * Create task attribute under parent
-	 * 
+	 *
 	 * @param parent
 	 * @return created attribute
 	 */
@@ -141,7 +143,7 @@ public class GitHubAttributeMetadata {
 	/**
 	 * Get value of this attribute from the task attribute under the root of the
 	 * given {@link TaskData}.
-	 * 
+	 *
 	 * @param data
 	 * @return value
 	 */
@@ -155,16 +157,15 @@ public class GitHubAttributeMetadata {
 	/**
 	 * Set the value of this attribute in the task attribute under the root of
 	 * the given {@link TaskData}.
-	 * 
+	 *
 	 * @param data
 	 * @param value
 	 */
 	public void setValue(TaskData data, String value) {
 		TaskAttribute root = data.getRoot();
-		if (value == null)
-			value = ""; //$NON-NLS-1$
 		TaskAttribute attribute = root.getAttribute(id);
 		if (attribute != null)
-			data.getAttributeMapper().setValue(attribute, value);
+			data.getAttributeMapper().setValue(attribute,
+					value == null ? "" : value); //$NON-NLS-1$
 	}
 }

@@ -1,9 +1,11 @@
 /*******************************************************************************
  *  Copyright (c) 2011 GitHub Inc.
  *  All rights reserved. This program and the accompanying materials
- *  are made available under the terms of the Eclipse Public License v1.0
+ *  are made available under the terms of the Eclipse Public License 2.0
  *  which accompanies this distribution, and is available at
- *  http://www.eclipse.org/legal/epl-v10.html
+ *  https://www.eclipse.org/legal/epl-2.0/
+ *
+ *  SPDX-License-Identifier: EPL-2.0
  *
  *  Contributors:
  *    Kevin Sawicki (GitHub Inc.) - initial API and implementation
@@ -31,6 +33,7 @@ import org.eclipse.ui.menus.CommandContributionItemParameter;
 /**
  * Gist task editor page class
  */
+@SuppressWarnings("restriction")
 public class GistTaskEditorPage extends AbstractTaskEditorPage {
 
 	/**
@@ -61,6 +64,7 @@ public class GistTaskEditorPage extends AbstractTaskEditorPage {
 	/**
 	 * @see org.eclipse.mylyn.tasks.ui.editors.AbstractTaskEditorPage#fillToolBar(org.eclipse.jface.action.IToolBarManager)
 	 */
+	@Override
 	public void fillToolBar(IToolBarManager toolBarManager) {
 		super.fillToolBar(toolBarManager);
 		addCloneAction(toolBarManager);
@@ -69,6 +73,7 @@ public class GistTaskEditorPage extends AbstractTaskEditorPage {
 	/**
 	 * @see org.eclipse.mylyn.tasks.ui.editors.AbstractTaskEditorPage#createPartDescriptors()
 	 */
+	@Override
 	protected Set<TaskEditorPartDescriptor> createPartDescriptors() {
 		Set<TaskEditorPartDescriptor> partDescriptors = super
 				.createPartDescriptors();
@@ -85,6 +90,7 @@ public class GistTaskEditorPage extends AbstractTaskEditorPage {
 		if (!getModel().getTaskData().isNew()) {
 			partDescriptors.add(new TaskEditorPartDescriptor(ID_PART_SUMMARY) {
 
+				@Override
 				public AbstractTaskEditorPart createPart() {
 					return new IssueSummaryPart(GistAttribute.AUTHOR_GRAVATAR
 							.getMetadata().getId(), null);
@@ -93,6 +99,7 @@ public class GistTaskEditorPage extends AbstractTaskEditorPage {
 			partDescriptors.add(new TaskEditorPartDescriptor(
 					ID_PART_ATTACHMENTS) {
 
+				@Override
 				public AbstractTaskEditorPart createPart() {
 					return new GistAttachmentPart();
 				}
@@ -100,9 +107,11 @@ public class GistTaskEditorPage extends AbstractTaskEditorPage {
 		}
 		partDescriptors.add(new TaskEditorPartDescriptor(ID_PART_ACTIONS) {
 
+			@Override
 			public AbstractTaskEditorPart createPart() {
 				return new TaskEditorActionPart() {
 
+					@Override
 					protected void addAttachContextButton(
 							Composite buttonComposite, FormToolkit toolkit) {
 						// Prohibit context button since Gists don't support

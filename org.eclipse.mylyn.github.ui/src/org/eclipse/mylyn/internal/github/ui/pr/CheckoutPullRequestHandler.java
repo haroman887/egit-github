@@ -1,9 +1,11 @@
 /******************************************************************************
  *  Copyright (c) 2011 GitHub Inc.
  *  All rights reserved. This program and the accompanying materials
- *  are made available under the terms of the Eclipse Public License v1.0
+ *  are made available under the terms of the Eclipse Public License 2.0
  *  which accompanies this distribution, and is available at
- *  http://www.eclipse.org/legal/epl-v10.html
+ *  https://www.eclipse.org/legal/epl-2.0/
+ *
+ *  SPDX-License-Identifier: EPL-2.0
  *
  *  Contributors:
  *    Kevin Sawicki (GitHub Inc.) - initial API and implementation
@@ -26,9 +28,8 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.egit.core.op.CreateLocalBranchOperation;
 import org.eclipse.egit.core.op.FetchOperation;
 import org.eclipse.egit.core.op.MergeOperation;
+import org.eclipse.egit.core.settings.GitSettings;
 import org.eclipse.egit.github.core.PullRequest;
-import org.eclipse.egit.ui.Activator;
-import org.eclipse.egit.ui.UIPreferences;
 import org.eclipse.egit.ui.internal.branch.BranchOperationUI;
 import org.eclipse.jgit.lib.Constants;
 import org.eclipse.jgit.lib.Ref;
@@ -66,6 +67,7 @@ public class CheckoutPullRequestHandler extends TaskDataHandler {
 		}
 	}
 
+	@Override
 	public Object execute(final ExecutionEvent event) throws ExecutionException {
 		final TaskData data = getTaskData(event);
 		if (data == null)
@@ -74,6 +76,7 @@ public class CheckoutPullRequestHandler extends TaskDataHandler {
 		Job job = new Job(MessageFormat.format(
 				Messages.CheckoutPullRequestHandler_JobName, data.getTaskId())) {
 
+			@Override
 			protected IStatus run(IProgressMonitor monitor) {
 				SubProgressMonitor sub;
 				try {
@@ -87,7 +90,7 @@ public class CheckoutPullRequestHandler extends TaskDataHandler {
 						return Status.CANCEL_STATUS;
 
 					String branchName = PullRequestUtils.getBranchName(request);
-					Ref branchRef = repo.getRef(branchName);
+					Ref branchRef = repo.findRef(branchName);
 					RemoteConfig remote = null;
 					String headBranch = null;
 
@@ -137,9 +140,8 @@ public class CheckoutPullRequestHandler extends TaskDataHandler {
 					sub.subTask(MessageFormat.format(
 							Messages.CheckoutPullRequestHandler_TaskFetching,
 							remote.getName()));
-					new FetchOperation(repo, remote, Activator.getDefault()
-							.getPreferenceStore()
-							.getInt(UIPreferences.REMOTE_CONNECTION_TIMEOUT),
+					new FetchOperation(repo, remote,
+							GitSettings.getRemoteConnectionTimeout(),
 							false).run(sub);
 					sub.done();
 

@@ -1,9 +1,11 @@
 /*******************************************************************************
  * Copyright (c) 2011 Red Hat and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     David Green <david.green@tasktop.com> - initial contribution
@@ -25,6 +27,7 @@ import org.junit.runners.Suite.SuiteClasses;
 		BlobTest.class, //
 		CollaboratorServiceTest.class, //
 		CommentTest.class, //
+		CommitCommentPayloadTest.class, //
 		CommitCommentTest.class, //
 		CommitFileTest.class, //
 		CommitServiceTest.class, //
@@ -34,13 +37,16 @@ import org.junit.runners.Suite.SuiteClasses;
 		CommitUserTest.class, //
 		ContentsServiceTest.class, //
 		ContributorTest.class, //
+		CreatePayloadTest.class, //
 		DataServiceTest.class, //
 		DateFormatterTest.class, //
-		DateUtilTests.class, //
+		DateUtilsTest.class, //
+		DeletePayloadTest.class, //
 		DeployKeyServiceTest.class, //
+		DownloadPayloadTest.class, //
+		DownloadResourceTest.class, //
 		DownloadServiceTest.class, //
 		DownloadTest.class, //
-		DownloadResourceTest.class, //
 		EncodingUtilsTest.class, //
 		EventFormatterTest.class, //
 		EventPayloadTest.class, //
@@ -48,24 +54,32 @@ import org.junit.runners.Suite.SuiteClasses;
 		EventServiceTest.class, //
 		EventTest.class, //
 		FieldErrorTest.class, //
+		FollowPayloadTest.class, //
+		ForkApplyPayloadTest.class, //
+		ForkPayloadTest.class, //
 		GistChangeStatusTest.class, //
 		GistFileTest.class, //
+		GistPayloadTest.class, //
 		GistRevisionTest.class, //
 		GistServiceTest.class, //
 		GistTest.class, //
 		GitHubClientTest.class, //
 		GollumPageTest.class, //
+		GollumPayloadTest.class, //
 		GsonUtilsTest.class, //
 		IdTest.class, //
+		IssueCommentPayloadTest.class, //
 		IssueEventTest.class, //
 		IssueServiceTest.class, //
 		IssueTest.class, //
+		IssuesPayloadTest.class, //
 		KeyTest.class, //
 		LabelComparatorTest.class, //
 		LabelServiceTest.class, //
 		LabelTest.class, //
-		LanguageTest.class, //
+		LanguagesTest.class, //
 		MarkdownServiceTest.class, //
+		MemberPayloadTest.class, //
 		MergeStatusTest.class, //
 		MilestoneComparatorTest.class, //
 		MilestoneServiceTest.class, //
@@ -74,8 +88,11 @@ import org.junit.runners.Suite.SuiteClasses;
 		OrganizationServiceTest.class, //
 		PagedRequestTest.class, //
 		PullRequestMarkerTest.class, //
+		PullRequestPayloadTest.class, //
+		PullRequestReviewCommentPayloadTest.class, //
 		PullRequestServiceTest.class, //
 		PullRequestTest.class, //
+		PushPayloadTest.class, //
 		ReferenceTest.class, //
 		RepositoryBranchTest.class, //
 		RepositoryCommitCompareTest.class, //
@@ -93,7 +110,9 @@ import org.junit.runners.Suite.SuiteClasses;
 		SearchIssueTest.class, //
 		SearchRepositoryTest.class, //
 		ShaResourceTest.class, //
+		StargazerServiceTest.class, //
 		TagTest.class, //
+		TeamAddPayloadTest.class, //
 		TeamServiceTest.class, //
 		TeamTest.class, //
 		TreeEntryTest.class, //
@@ -103,7 +122,7 @@ import org.junit.runners.Suite.SuiteClasses;
 		UserPlanTest.class, //
 		UserServiceTest.class, //
 		UserTest.class, //
-		WatcherServiceTest.class //
+		WatchPayloadTest.class, //
 })
 public class AllHeadlessTests {
 

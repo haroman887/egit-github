@@ -1,9 +1,11 @@
 /******************************************************************************
  *  Copyright (c) 2011 GitHub Inc.
  *  All rights reserved. This program and the accompanying materials
- *  are made available under the terms of the Eclipse Public License v1.0
+ *  are made available under the terms of the Eclipse Public License 2.0
  *  which accompanies this distribution, and is available at
- *  http://www.eclipse.org/legal/epl-v10.html
+ *  https://www.eclipse.org/legal/epl-2.0/
+ *
+ *  SPDX-License-Identifier: EPL-2.0
  *
  *  Contributors:
  *    Kevin Sawicki (GitHub Inc.) - initial API and implementation
@@ -15,8 +17,10 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 import org.eclipse.egit.github.core.RepositoryHook;
@@ -36,6 +40,7 @@ public class RepositoryHookTest {
 		RepositoryHook hook = new RepositoryHook();
 		assertFalse(hook.isActive());
 		assertNull(hook.getConfig());
+		assertNull(hook.getEvents());
 		assertNull(hook.getCreatedAt());
 		assertEquals(0, hook.getId());
 		assertNull(hook.getLastResponse());
@@ -53,6 +58,8 @@ public class RepositoryHookTest {
 		assertTrue(hook.setActive(true).isActive());
 		Map<String, String> config = Collections.singletonMap("a", "b");
 		assertEquals(config, hook.setConfig(config).getConfig());
+		List<String> events = Arrays.asList("push", "pull_request");
+		assertEquals(events, hook.setEvents(events).getEvents());
 		assertEquals(new Date(1234), hook.setCreatedAt(new Date(1234))
 				.getCreatedAt());
 		assertEquals(150, hook.setId(150).getId());

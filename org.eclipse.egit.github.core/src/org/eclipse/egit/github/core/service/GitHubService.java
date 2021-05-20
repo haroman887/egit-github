@@ -1,9 +1,11 @@
 /*******************************************************************************
  *  Copyright (c) 2011 GitHub Inc.
  *  All rights reserved. This program and the accompanying materials
- *  are made available under the terms of the Eclipse Public License v1.0
+ *  are made available under the terms of the Eclipse Public License 2.0
  *  which accompanies this distribution, and is available at
- *  http://www.eclipse.org/legal/epl-v10.html
+ *  https://www.eclipse.org/legal/epl-2.0/
+ *
+ *  SPDX-License-Identifier: EPL-2.0
  *
  *  Contributors:
  *    Kevin Sawicki (GitHub Inc.) - initial API and implementation
@@ -50,6 +52,37 @@ public abstract class GitHubService {
 	 * Accept header for full response (body, bodyText and bodyHtml)
 	 */
 	public static final String ACCEPT_FULL = "application/vnd.github.v3.full+json"; //$NON-NLS-1$
+
+	/**
+	 * Accept header for diff response
+	 */
+	public static final String ACCEPT_DIFF = "application/vnd.github.v3.diff"; //$NON-NLS-1$
+
+	/**
+	 * Accept header for patch response
+	 */
+	public static final String ACCEPT_PATCH = "application/vnd.github.v3.patch"; //$NON-NLS-1$
+
+	/**
+	 * Accept header to use preview features of the 'ironman' release.
+	 * @see <a href="https://developer.github.com/changes">https://developer.github.com/changes</a>
+	 * @since 4.2
+	 */
+	public static final String ACCEPT_PREVIEW_IRONMAN = "application/vnd.github.ironman-preview+json"; //$NON-NLS-1$
+
+	/**
+	 * Accept header to use preview features of the 'loki' release.
+	 * @see <a href="https://developer.github.com/changes">https://developer.github.com/changes</a>
+	 * @since 4.2
+	 */
+	public static final String ACCEPT_PREVIEW_LOKI = "application/vnd.github.loki-preview+json"; //$NON-NLS-1$
+
+	/**
+	 * Accept header to use preview features of the 'drax' release.
+	 * @see <a href="https://developer.github.com/changes">https://developer.github.com/changes</a>
+	 * @since 4.2
+	 */
+	public static final String ACCEPT_PREVIEW_DRAX = "application/vnd.github.drax-preview+json"; //$NON-NLS-1$
 
 	/**
 	 * Client field
@@ -113,7 +146,7 @@ public abstract class GitHubService {
 	 * @return request
 	 */
 	protected <V> PagedRequest<V> createPagedRequest(int start, int size) {
-		return new PagedRequest<V>(start, size);
+		return new PagedRequest<>(start, size);
 	}
 
 	/**
@@ -124,7 +157,7 @@ public abstract class GitHubService {
 	 * @return iterator
 	 */
 	protected <V> PageIterator<V> createPageIterator(PagedRequest<V> request) {
-		return new PageIterator<V>(request, client);
+		return new PageIterator<>(request, client);
 	}
 
 	/**
@@ -150,7 +183,7 @@ public abstract class GitHubService {
 	 * @throws IOException
 	 */
 	protected <V> List<V> getAll(PageIterator<V> iterator) throws IOException {
-		List<V> elements = new ArrayList<V>();
+		List<V> elements = new ArrayList<>();
 		try {
 			while (iterator.hasNext())
 				elements.addAll(iterator.next());

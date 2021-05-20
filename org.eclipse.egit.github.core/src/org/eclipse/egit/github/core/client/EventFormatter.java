@@ -1,9 +1,11 @@
 /*******************************************************************************
  *  Copyright (c) 2011 GitHub Inc.
  *  All rights reserved. This program and the accompanying materials
- *  are made available under the terms of the Eclipse Public License v1.0
+ *  are made available under the terms of the Eclipse Public License 2.0
  *  which accompanies this distribution, and is available at
- *  http://www.eclipse.org/legal/epl-v10.html
+ *  https://www.eclipse.org/legal/epl-2.0/
+ *
+ *  SPDX-License-Identifier: EPL-2.0
  *
  *  Contributors:
  *    Jason Tsay (GitHub Inc.) - initial API and implementation
@@ -27,6 +29,7 @@ import static org.eclipse.egit.github.core.event.Event.TYPE_PUBLIC;
 import static org.eclipse.egit.github.core.event.Event.TYPE_PULL_REQUEST;
 import static org.eclipse.egit.github.core.event.Event.TYPE_PULL_REQUEST_REVIEW_COMMENT;
 import static org.eclipse.egit.github.core.event.Event.TYPE_PUSH;
+import static org.eclipse.egit.github.core.event.Event.TYPE_RELEASE;
 import static org.eclipse.egit.github.core.event.Event.TYPE_TEAM_ADD;
 import static org.eclipse.egit.github.core.event.Event.TYPE_WATCH;
 
@@ -58,6 +61,7 @@ import org.eclipse.egit.github.core.event.PublicPayload;
 import org.eclipse.egit.github.core.event.PullRequestPayload;
 import org.eclipse.egit.github.core.event.PullRequestReviewCommentPayload;
 import org.eclipse.egit.github.core.event.PushPayload;
+import org.eclipse.egit.github.core.event.ReleasePayload;
 import org.eclipse.egit.github.core.event.TeamAddPayload;
 import org.eclipse.egit.github.core.event.WatchPayload;
 
@@ -71,12 +75,13 @@ public class EventFormatter implements JsonDeserializer<Event> {
 			.registerTypeAdapter(Date.class, new DateFormatter())
 			.setFieldNamingPolicy(LOWER_CASE_WITH_UNDERSCORES).create();
 
+	@Override
 	public Event deserialize(JsonElement json, Type typeOfT,
 			JsonDeserializationContext context) throws JsonParseException {
 		final Event event = gson.fromJson(json, Event.class);
 		if (event == null || !json.isJsonObject())
 			return event;
-		final JsonElement rawPayload = json.getAsJsonObject().get("payload");
+		final JsonElement rawPayload = json.getAsJsonObject().get("payload"); //$NON-NLS-1$
 		if (rawPayload == null || !rawPayload.isJsonObject())
 			return event;
 		final String type = event.getType();
@@ -116,6 +121,8 @@ public class EventFormatter implements JsonDeserializer<Event> {
 			payloadClass = PullRequestReviewCommentPayload.class;
 		else if (TYPE_PUSH.equals(type))
 			payloadClass = PushPayload.class;
+		else if (TYPE_RELEASE.equals(type))
+			payloadClass = ReleasePayload.class;
 		else if (TYPE_TEAM_ADD.equals(type))
 			payloadClass = TeamAddPayload.class;
 		else if (TYPE_WATCH.equals(type))

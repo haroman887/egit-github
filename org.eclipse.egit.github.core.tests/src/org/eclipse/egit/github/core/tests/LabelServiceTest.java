@@ -1,9 +1,11 @@
 /*******************************************************************************
  *  Copyright (c) 2011 Christian Trutz
  *  All rights reserved. This program and the accompanying materials
- *  are made available under the terms of the Eclipse Public License v1.0
+ *  are made available under the terms of the Eclipse Public License 2.0
  *  which accompanies this distribution, and is available at
- *  http://www.eclipse.org/legal/epl-v10.html
+ *  https://www.eclipse.org/legal/epl-2.0/
+ *
+ *  SPDX-License-Identifier: EPL-2.0
  *
  *  Contributors:
  *    Christian Trutz - initial API and implementation
@@ -31,7 +33,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 /**
  * Unit tests of {@link LabelService}
@@ -187,7 +189,7 @@ public class LabelServiceTest {
 	 */
 	@Test
 	public void setLabels() throws IOException {
-		List<Label> labels = new LinkedList<Label>();
+		List<Label> labels = new LinkedList<>();
 		labelService.setLabels("test_user", "test_repository", "1", labels);
 		TypeToken<List<Label>> labelsToken = new TypeToken<List<Label>>() {
 		};
@@ -204,7 +206,7 @@ public class LabelServiceTest {
 	@Test
 	public void setLabelsWithRepositoryId() throws IOException {
 		RepositoryId repo = new RepositoryId("test_user", "test_repository");
-		List<Label> labels = new LinkedList<Label>();
+		List<Label> labels = new LinkedList<>();
 		labelService.setLabels(repo, "1", labels);
 		TypeToken<List<Label>> labelsToken = new TypeToken<List<Label>>() {
 		};

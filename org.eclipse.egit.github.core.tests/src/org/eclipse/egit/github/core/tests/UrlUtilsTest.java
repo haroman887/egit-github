@@ -1,9 +1,11 @@
 /******************************************************************************
  *  Copyright (c) 2011 GitHub Inc.
  *  All rights reserved. This program and the accompanying materials
- *  are made available under the terms of the Eclipse Public License v1.0
+ *  are made available under the terms of the Eclipse Public License 2.0
  *  which accompanies this distribution, and is available at
- *  http://www.eclipse.org/legal/epl-v10.html
+ *  https://www.eclipse.org/legal/epl-2.0/
+ *
+ *  SPDX-License-Identifier: EPL-2.0
  *
  *  Contributors:
  *    Kevin Sawicki (GitHub Inc.) - initial API and implementation
@@ -23,15 +25,6 @@ import org.junit.Test;
 public class UrlUtilsTest {
 
 	/**
-	 * Test default constructor through anonymous sub-class
-	 */
-	@Test
-	public void constructor() {
-		assertNotNull(new UrlUtils() {
-		});
-	}
-
-	/**
 	 * Encode url
 	 */
 	@Test
@@ -46,7 +39,7 @@ public class UrlUtilsTest {
 	 * Verify generation of HTTPS URL
 	 */
 	@Test
-	public void gererateHttpsUrl() {
+	public void generateHttpsUrl() {
 		RepositoryId repo = new RepositoryId("person", "project");
 		assertEquals("https://me@github.com/person/project.git",
 				UrlUtils.createRemoteHttpsUrl(repo, "me"));
@@ -56,7 +49,7 @@ public class UrlUtilsTest {
 	 * Verify generation of SSH URL
 	 */
 	@Test
-	public void gererateSshUrl() {
+	public void generateSshUrl() {
 		RepositoryId repo = new RepositoryId("person", "project");
 		assertEquals("git@github.com:person/project.git",
 				UrlUtils.createRemoteSshUrl(repo));
@@ -66,7 +59,7 @@ public class UrlUtilsTest {
 	 * Verify generation of read only URL
 	 */
 	@Test
-	public void gererateReadOnlyUrl() {
+	public void generateReadOnlyUrl() {
 		RepositoryId repo = new RepositoryId("person", "project");
 		assertEquals("git://github.com/person/project.git",
 				UrlUtils.createRemoteReadOnlyUrl(repo));

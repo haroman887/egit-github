@@ -1,9 +1,11 @@
 /******************************************************************************
  *  Copyright (c) 2011 GitHub Inc.
  *  All rights reserved. This program and the accompanying materials
- *  are made available under the terms of the Eclipse Public License v1.0
+ *  are made available under the terms of the Eclipse Public License 2.0
  *  which accompanies this distribution, and is available at
- *  http://www.eclipse.org/legal/epl-v10.html
+ *  https://www.eclipse.org/legal/epl-2.0/
+ *
+ *  SPDX-License-Identifier: EPL-2.0
  *
  *  Contributors:
  *    Kevin Sawicki (GitHub Inc.) - initial API and implementation
@@ -124,6 +126,8 @@ public class IssueEvent implements Serializable {
 
     private User assignee;
 
+    private User assigner;
+
     private Milestone milestone;
 
     private Rename rename;
@@ -243,7 +247,7 @@ public class IssueEvent implements Serializable {
     }
 
     /**
-     * @return actor
+     * @return assignee
      */
     public User getAssignee() {
         return assignee;
@@ -255,6 +259,22 @@ public class IssueEvent implements Serializable {
      */
     public IssueEvent setAssignee(User assignee) {
         this.assignee = assignee;
+        return this;
+    }
+
+    /**
+     * @return assigner
+     */
+    public User getAssigner() {
+        return assigner;
+    }
+
+    /**
+     * @param assigner
+     * @return this issue event
+     */
+    public IssueEvent setAssigner(User assigner) {
+        this.assigner = assigner;
         return this;
     }
 

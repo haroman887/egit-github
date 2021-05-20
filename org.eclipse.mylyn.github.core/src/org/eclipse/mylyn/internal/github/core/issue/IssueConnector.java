@@ -1,9 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2011 Red Hat and others.
+ * Copyright (c) 2011, 2020 Red Hat and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     David Green <david.green@tasktop.com> - initial contribution
@@ -46,8 +48,6 @@ import org.eclipse.mylyn.commons.net.Policy;
 import org.eclipse.mylyn.internal.github.core.GitHub;
 import org.eclipse.mylyn.internal.github.core.QueryUtils;
 import org.eclipse.mylyn.internal.github.core.RepositoryConnector;
-import org.eclipse.mylyn.internal.github.core.pr.PullRequestConnector;
-import org.eclipse.mylyn.internal.tasks.core.IRepositoryConstants;
 import org.eclipse.mylyn.tasks.core.IRepositoryQuery;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.core.data.AbstractTaskDataHandler;
@@ -67,7 +67,7 @@ public class IssueConnector extends RepositoryConnector {
 
 	/**
 	 * Get repository label for id provider
-	 * 
+	 *
 	 * @param repo
 	 * @return label
 	 */
@@ -76,31 +76,41 @@ public class IssueConnector extends RepositoryConnector {
 	}
 
 	/**
-	 * Create issue task repository
-	 * 
+	 * Creates an issue task repository.
+	 *
 	 * @param repo
+	 *            internal model to create the task repository from
 	 * @param username
+	 *            for authentication
 	 * @param password
-	 * @return task repository
+	 *            for authentication
+	 * @param isToken
+	 *            whether the password is a token
+	 * @return the {@link TaskRepository}
 	 */
 	public static TaskRepository createTaskRepository(Repository repo,
-			String username, String password) {
+			String username, String password, boolean isToken) {
 		String url = GitHub.createGitHubUrl(repo.getOwner().getLogin(),
 				repo.getName());
 		TaskRepository repository = new TaskRepository(KIND, url);
-		repository.setProperty(IRepositoryConstants.PROPERTY_LABEL,
-				getRepositoryLabel(repo));
-		if (username != null && password != null)
+		repository.setRepositoryLabel(getRepositoryLabel(repo));
+		String loginName = username;
+		if (loginName == null && isToken) {
+			loginName = ""; //$NON-NLS-1$
+		}
+		if (loginName != null && password != null) {
 			repository.setCredentials(AuthenticationType.REPOSITORY,
-					new AuthenticationCredentials(username, password), true);
-		repository.setProperty(IRepositoryConstants.PROPERTY_CATEGORY,
-				IRepositoryConstants.CATEGORY_BUGS);
+					new AuthenticationCredentials(loginName, password), true);
+		}
+		repository.setCategory(TaskRepository.CATEGORY_BUGS);
+		repository.setProperty(GitHub.PROPERTY_USE_TOKEN,
+				Boolean.toString(isToken));
 		return repository;
 	}
 
 	/**
 	 * Create client for repository
-	 * 
+	 *
 	 * @param repository
 	 * @return client
 	 */
@@ -131,7 +141,7 @@ public class IssueConnector extends RepositoryConnector {
 
 	/**
 	 * Refresh labels for repository
-	 * 
+	 *
 	 * @param repository
 	 * @return labels
 	 * @throws CoreException
@@ -155,13 +165,13 @@ public class IssueConnector extends RepositoryConnector {
 
 	/**
 	 * Get labels for task repository.
-	 * 
+	 *
 	 * @param repository
 	 * @return non-null but possibly empty list of labels
 	 */
 	public List<Label> getLabels(TaskRepository repository) {
 		Assert.isNotNull(repository, "Repository cannot be null"); //$NON-NLS-1$
-		List<Label> labels = new LinkedList<Label>();
+		List<Label> labels = new LinkedList<>();
 		List<Label> cached = this.repositoryLabels.get(repository);
 		if (cached != null)
 			labels.addAll(cached);
@@ -170,7 +180,7 @@ public class IssueConnector extends RepositoryConnector {
 
 	/**
 	 * Are there cached labels for the specified task repository?
-	 * 
+	 *
 	 * @param repository
 	 * @return true if contains labels, false otherwise
 	 */
@@ -180,7 +190,7 @@ public class IssueConnector extends RepositoryConnector {
 
 	/**
 	 * Refresh milestones for repository
-	 * 
+	 *
 	 * @param repository
 	 * @return milestones
 	 * @throws CoreException
@@ -192,7 +202,7 @@ public class IssueConnector extends RepositoryConnector {
 		GitHubClient client = createClient(repository);
 		MilestoneService service = new MilestoneService(client);
 		try {
-			List<Milestone> milestones = new LinkedList<Milestone>();
+			List<Milestone> milestones = new LinkedList<>();
 			milestones.addAll(service.getMilestones(repo.getOwner(),
 					repo.getName(), IssueService.STATE_OPEN));
 			milestones.addAll(service.getMilestones(repo.getOwner(),
@@ -207,13 +217,13 @@ public class IssueConnector extends RepositoryConnector {
 
 	/**
 	 * Get milestones for task repository.
-	 * 
+	 *
 	 * @param repository
 	 * @return non-null but possibly empty list of milestones
 	 */
 	public List<Milestone> getMilestones(TaskRepository repository) {
 		Assert.isNotNull(repository, "Repository cannot be null"); //$NON-NLS-1$
-		List<Milestone> milestones = new LinkedList<Milestone>();
+		List<Milestone> milestones = new LinkedList<>();
 		List<Milestone> cached = this.repositoryMilestones.get(repository);
 		if (cached != null)
 			milestones.addAll(cached);
@@ -222,7 +232,7 @@ public class IssueConnector extends RepositoryConnector {
 
 	/**
 	 * Are there cached milestones for the specified task repository?
-	 * 
+	 *
 	 * @param repository
 	 * @return true if contains milestones, false otherwise
 	 */
@@ -232,7 +242,7 @@ public class IssueConnector extends RepositoryConnector {
 
 	/**
 	 * {@inheritDoc}
-	 * 
+	 *
 	 * @return always {@code true}
 	 */
 	@Override
@@ -242,7 +252,7 @@ public class IssueConnector extends RepositoryConnector {
 
 	/**
 	 * {@inheritDoc}
-	 * 
+	 *
 	 * @return always {@code true}
 	 */
 	@Override
@@ -252,7 +262,7 @@ public class IssueConnector extends RepositoryConnector {
 
 	/**
 	 * {@inheritDoc}
-	 * 
+	 *
 	 * @see #KIND
 	 */
 	@Override
@@ -292,7 +302,7 @@ public class IssueConnector extends RepositoryConnector {
 			GitHubClient client = createClient(repository);
 			IssueService service = new IssueService(client);
 
-			Map<String, String> filterData = new HashMap<String, String>();
+			Map<String, String> filterData = new HashMap<>();
 			String mentions = query.getAttribute(IssueService.FILTER_MENTIONED);
 			if (mentions != null)
 				filterData.put(IssueService.FILTER_MENTIONED, mentions);
@@ -377,7 +387,7 @@ public class IssueConnector extends RepositoryConnector {
 	public String getRepositoryUrlFromTaskUrl(String taskFullUrl) {
 		if (taskFullUrl != null) {
 			Matcher matcher = Pattern.compile(
-					"(http://.+?)/issues/issue/([^/]+)").matcher(taskFullUrl); //$NON-NLS-1$
+					"(http://.+?)/issues/([^/]+)").matcher(taskFullUrl); //$NON-NLS-1$
 			if (matcher.matches())
 				return matcher.group(1);
 		}
@@ -388,7 +398,7 @@ public class IssueConnector extends RepositoryConnector {
 	public String getTaskIdFromTaskUrl(String taskFullUrl) {
 		if (taskFullUrl != null) {
 			Matcher matcher = Pattern
-					.compile(".+?/issues/issue/([^/]+)").matcher(taskFullUrl); //$NON-NLS-1$
+					.compile(".+?/issues/([^/]+)").matcher(taskFullUrl); //$NON-NLS-1$
 			if (matcher.matches())
 				return matcher.group(1);
 		}
@@ -397,19 +407,19 @@ public class IssueConnector extends RepositoryConnector {
 
 	@Override
 	public String getTaskUrl(String repositoryUrl, String taskId) {
-		return repositoryUrl + "/issues/issue/" + taskId; //$NON-NLS-1$
+		return repositoryUrl + "/issues/" + taskId; //$NON-NLS-1$
 	}
 
 	@Override
 	public void updateRepositoryConfiguration(TaskRepository taskRepository,
 			IProgressMonitor monitor) throws CoreException {
-		monitor = Policy.monitorFor(monitor);
-		monitor.beginTask("", 2); //$NON-NLS-1$
-		monitor.setTaskName(Messages.IssueConnector_TaskUpdatingLabels);
+		IProgressMonitor m = Policy.monitorFor(monitor);
+		m.beginTask("", 2); //$NON-NLS-1$
+		m.setTaskName(Messages.IssueConnector_TaskUpdatingLabels);
 		refreshLabels(taskRepository);
-		monitor.worked(1);
-		monitor.setTaskName(Messages.IssueConnector_TaskUpdatingMilestones);
+		m.worked(1);
+		m.setTaskName(Messages.IssueConnector_TaskUpdatingMilestones);
 		refreshMilestones(taskRepository);
-		monitor.done();
+		m.done();
 	}
 }

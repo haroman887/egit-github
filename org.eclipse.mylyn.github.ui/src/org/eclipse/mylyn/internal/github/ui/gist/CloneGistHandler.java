@@ -1,9 +1,11 @@
 /*******************************************************************************
  *  Copyright (c) 2011 GitHub Inc.
  *  All rights reserved. This program and the accompanying materials
- *  are made available under the terms of the Eclipse Public License v1.0
+ *  are made available under the terms of the Eclipse Public License 2.0
  *  which accompanies this distribution, and is available at
- *  http://www.eclipse.org/legal/epl-v10.html
+ *  https://www.eclipse.org/legal/epl-2.0/
+ *
+ *  SPDX-License-Identifier: EPL-2.0
  *
  *  Contributors:
  *    Kevin Sawicki (GitHub Inc.) - initial API and implementation
@@ -34,8 +36,8 @@ import org.eclipse.egit.core.RepositoryUtil;
 import org.eclipse.egit.core.op.CloneOperation;
 import org.eclipse.egit.core.op.CloneOperation.PostCloneTask;
 import org.eclipse.egit.core.op.ConnectProviderOperation;
+import org.eclipse.egit.core.settings.GitSettings;
 import org.eclipse.egit.ui.Activator;
-import org.eclipse.egit.ui.UIPreferences;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jgit.lib.Constants;
 import org.eclipse.jgit.lib.Repository;
@@ -66,7 +68,7 @@ public class CloneGistHandler extends TaskDataHandler {
 	}
 
 	private static RepositoryUtil getRepoUtil() {
-		return org.eclipse.egit.core.Activator.getDefault().getRepositoryUtil();
+		return RepositoryUtil.getInstance();
 	}
 
 	/**
@@ -126,8 +128,7 @@ public class CloneGistHandler extends TaskDataHandler {
 				.getAttribute(GistAttribute.CLONE_URL.getMetadata().getId())
 				.getValue();
 		URIish uri = new URIish(pullUrl);
-		int timeout = Activator.getDefault().getPreferenceStore()
-				.getInt(UIPreferences.REMOTE_CONNECTION_TIMEOUT);
+		int timeout = GitSettings.getRemoteConnectionTimeout();
 		final File workDir = new File(getParentDirectory(), name);
 
 		if (getRepoUtil().getConfiguredRepositories().contains(
@@ -142,6 +143,7 @@ public class CloneGistHandler extends TaskDataHandler {
 	private Job createCloneJob(final ExecutionEvent event, final TaskData data) {
 		Job job = new Job(Messages.CloneGistHandler_TaskCloning) {
 
+			@Override
 			protected IStatus run(IProgressMonitor monitor) {
 				try {
 					final String name = getGistName(data);
@@ -150,6 +152,7 @@ public class CloneGistHandler extends TaskDataHandler {
 
 					operation.addPostCloneTask(new PostCloneTask() {
 
+						@Override
 						public void execute(Repository repository,
 								IProgressMonitor monitor) throws CoreException {
 							if (monitor.isCanceled())
@@ -162,10 +165,12 @@ public class CloneGistHandler extends TaskDataHandler {
 
 					operation.addPostCloneTask(new PostCloneTask() {
 
+						@Override
 						public void execute(final Repository repository,
 								IProgressMonitor monitor) throws CoreException {
 							IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
 
+								@Override
 								public void run(IProgressMonitor monitor)
 										throws CoreException {
 									if (monitor.isCanceled())
@@ -199,6 +204,7 @@ public class CloneGistHandler extends TaskDataHandler {
 				.getCause() : exception;
 		PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
 
+			@Override
 			public void run() {
 				ErrorDialog.openError(HandlerUtil.getActiveShell(event),
 						Messages.CloneGistHandler_ErrorTitle,
@@ -212,6 +218,7 @@ public class CloneGistHandler extends TaskDataHandler {
 	/**
 	 * @see org.eclipse.core.commands.IHandler#execute(org.eclipse.core.commands.ExecutionEvent)
 	 */
+	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		TaskData data = getTaskData(event);
 		if (data != null)

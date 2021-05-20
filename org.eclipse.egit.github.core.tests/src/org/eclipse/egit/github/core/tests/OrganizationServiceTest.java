@@ -1,9 +1,11 @@
 /******************************************************************************
  *  Copyright (c) 2011 GitHub Inc.
  *  All rights reserved. This program and the accompanying materials
- *  are made available under the terms of the Eclipse Public License v1.0
+ *  are made available under the terms of the Eclipse Public License 2.0
  *  which accompanies this distribution, and is available at
- *  http://www.eclipse.org/legal/epl-v10.html
+ *  https://www.eclipse.org/legal/epl-2.0/
+ *
+ *  SPDX-License-Identifier: EPL-2.0
  *
  *  Contributors:
  *    Kevin Sawicki (GitHub Inc.) - initial API and implementation
@@ -16,17 +18,19 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
 
 import java.io.IOException;
+import java.util.HashMap;
 
 import org.eclipse.egit.github.core.User;
 import org.eclipse.egit.github.core.client.GitHubClient;
 import org.eclipse.egit.github.core.client.GitHubRequest;
 import org.eclipse.egit.github.core.client.GitHubResponse;
 import org.eclipse.egit.github.core.service.OrganizationService;
+import org.eclipse.egit.github.core.service.OrganizationService.RoleFilter;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 /**
  * Unit test of {@link OrganizationService}
@@ -212,6 +216,46 @@ public class OrganizationServiceTest {
 		service.getMembers("group");
 		GitHubRequest request = new GitHubRequest();
 		request.setUri(Utils.page("/orgs/group/members"));
+		verify(client).get(request);
+	}
+
+	/**
+	 * Get members with role filter "all"
+	 *
+	 * @throws IOException
+	 */
+	@Test
+	public void getMembersAll() throws IOException {
+		testMembersByRole(RoleFilter.all);
+	}
+
+	/**
+	 * Get members with role filter "all"
+	 *
+	 * @throws IOException
+	 */
+	@Test
+	public void getMembersAdmin() throws IOException {
+		testMembersByRole(RoleFilter.admin);
+	}
+
+	/**
+	 * Get members with role filter "all"
+	 *
+	 * @throws IOException
+	 */
+	@Test
+	public void getMembersMember() throws IOException {
+		testMembersByRole(RoleFilter.member);
+	}
+
+	private void testMembersByRole(RoleFilter roleFilter) throws IOException {
+		service.getMembers("group", roleFilter);
+		HashMap<String, String> params = new HashMap<>();
+		params.put("role", roleFilter.toString());
+		GitHubRequest request = new GitHubRequest();
+		request.setParams(params);
+		request.setUri(Utils.page("/orgs/group/members?role=" + roleFilter.toString()));
 		verify(client).get(request);
 	}
 

@@ -1,9 +1,11 @@
 /******************************************************************************
  *  Copyright (c) 2011 GitHub Inc.
  *  All rights reserved. This program and the accompanying materials
- *  are made available under the terms of the Eclipse Public License v1.0
+ *  are made available under the terms of the Eclipse Public License 2.0
  *  which accompanies this distribution, and is available at
- *  http://www.eclipse.org/legal/epl-v10.html
+ *  https://www.eclipse.org/legal/epl-2.0/
+ *
+ *  SPDX-License-Identifier: EPL-2.0
  *
  *  Contributors:
  *    Kevin Sawicki (GitHub Inc.) - initial API and implementation
@@ -22,9 +24,15 @@ public class CommitComment extends Comment {
 
 	private int position;
 
+	private int originalPosition;
+
 	private String commitId;
 
+	private String originalCommitId;
+
 	private String path;
+
+	private String diffHunk;
 
 	/**
 	 * @return line
@@ -59,6 +67,22 @@ public class CommitComment extends Comment {
 	}
 
 	/**
+	 * @return originalPosition
+	 */
+	public int getOriginalPosition() {
+		return originalPosition;
+	}
+
+	/**
+	 * @param originalPosition
+	 * @return this commit comment
+	 */
+	public CommitComment setOriginalPosition(int originalPosition) {
+		this.originalPosition = originalPosition;
+		return this;
+	}
+
+	/**
 	 * @return commitId
 	 */
 	public String getCommitId() {
@@ -75,6 +99,22 @@ public class CommitComment extends Comment {
 	}
 
 	/**
+	 * @return originalCommitId
+	 */
+	public String getOriginalCommitId() {
+		return originalCommitId;
+	}
+
+	/**
+	 * @param originalCommitId
+	 * @return this commit comment
+	 */
+	public CommitComment setOriginalCommitId(String originalCommitId) {
+		this.originalCommitId = originalCommitId;
+		return this;
+	}
+
+	/**
 	 * @return path
 	 */
 	public String getPath() {
@@ -87,6 +127,22 @@ public class CommitComment extends Comment {
 	 */
 	public CommitComment setPath(String path) {
 		this.path = path;
+		return this;
+	}
+
+	/**
+	 * @return diffHunk
+	 */
+	public String getDiffHunk() {
+		return diffHunk;
+	}
+
+	/**
+	 * @param diffHunk
+	 * @return this commit comment
+	 */
+	public CommitComment setDiffHunk(String diffHunk) {
+		this.diffHunk = diffHunk;
 		return this;
 	}
 }

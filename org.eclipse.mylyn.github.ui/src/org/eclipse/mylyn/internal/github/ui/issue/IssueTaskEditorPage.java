@@ -1,9 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2011 Red Hat and others.
+ * Copyright (c) 2011, 2020 Red Hat and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     David Green <david.green@tasktop.com> - initial contribution
@@ -62,6 +64,7 @@ public class IssueTaskEditorPage extends AbstractTaskEditorPage {
 		}
 		partDescriptors.add(new TaskEditorPartDescriptor(ID_PART_SUMMARY) {
 
+			@Override
 			public AbstractTaskEditorPart createPart() {
 				return new IssueSummaryPart(IssueAttribute.REPORTER_GRAVATAR
 						.getMetadata().getId(),
@@ -70,6 +73,7 @@ public class IssueTaskEditorPage extends AbstractTaskEditorPage {
 		}.setPath(PATH_HEADER));
 		partDescriptors.add(new TaskEditorPartDescriptor(ID_PART_ATTRIBUTES) {
 
+			@Override
 			public AbstractTaskEditorPart createPart() {
 				return new IssueAttributePart();
 			}
@@ -99,8 +103,13 @@ public class IssueTaskEditorPage extends AbstractTaskEditorPage {
 	private boolean checkCanSubmit(final int type) {
 		final TaskRepository taskRepository = getModel().getTaskRepository();
 		AuthenticationCredentials cred = taskRepository.getCredentials(AuthenticationType.REPOSITORY);
-		if (cred == null || cred.getUserName() == null || cred.getUserName().equals("")) { //$NON-NLS-1$
+		boolean isToken = Boolean.parseBoolean(
+				taskRepository.getProperty(GitHub.PROPERTY_USE_TOKEN));
+		boolean noUser = !isToken
+				&& (cred.getUserName() == null || cred.getUserName().isEmpty());
+		if (cred == null || noUser) {
 			PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
+				@Override
 				public void run() {
 					getTaskEditor().setMessage(Messages.IssueTaskEditorPage_MessageAnonymousCannotSubmit, type,
 							new HyperlinkAdapter() {

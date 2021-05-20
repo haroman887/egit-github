@@ -1,9 +1,11 @@
 /*******************************************************************************
  *  Copyright (c) 2011 GitHub Inc.
  *  All rights reserved. This program and the accompanying materials
- *  are made available under the terms of the Eclipse Public License v1.0
+ *  are made available under the terms of the Eclipse Public License 2.0
  *  which accompanies this distribution, and is available at
- *  http://www.eclipse.org/legal/epl-v10.html
+ *  https://www.eclipse.org/legal/epl-2.0/
+ *
+ *  SPDX-License-Identifier: EPL-2.0
  *
  *  Contributors:
  *    Kevin Sawicki (GitHub Inc.) - initial API and implementation
@@ -30,6 +32,7 @@ import org.eclipse.swt.widgets.Text;
 /**
  * Gist repository query page class.
  */
+@SuppressWarnings("restriction")
 public class GistRepositoryQueryPage extends AbstractRepositoryQueryPage {
 
 	private Text titleText;
@@ -57,6 +60,7 @@ public class GistRepositoryQueryPage extends AbstractRepositoryQueryPage {
 	/**
 	 * @see org.eclipse.jface.dialogs.IDialogPage#createControl(org.eclipse.swt.widgets.Composite)
 	 */
+	@Override
 	public void createControl(Composite parent) {
 		Composite displayArea = new Composite(parent, SWT.NONE);
 		initializeDialogUnits(displayArea);
@@ -67,6 +71,7 @@ public class GistRepositoryQueryPage extends AbstractRepositoryQueryPage {
 
 		ModifyListener completeListener = new ModifyListener() {
 
+			@Override
 			public void modifyText(ModifyEvent e) {
 				setPageComplete(isPageComplete());
 			}
@@ -117,6 +122,7 @@ public class GistRepositoryQueryPage extends AbstractRepositoryQueryPage {
 	/**
 	 * @see org.eclipse.mylyn.tasks.ui.wizards.AbstractRepositoryQueryPage#getQueryTitle()
 	 */
+	@Override
 	public String getQueryTitle() {
 		return titleText != null ? titleText.getText() : null;
 	}
@@ -124,6 +130,7 @@ public class GistRepositoryQueryPage extends AbstractRepositoryQueryPage {
 	/**
 	 * @see org.eclipse.mylyn.tasks.ui.wizards.AbstractRepositoryQueryPage#isPageComplete()
 	 */
+	@Override
 	public boolean isPageComplete() {
 		boolean complete = inSearchContainer() ? true : super.isPageComplete();
 		if (complete)
@@ -134,6 +141,7 @@ public class GistRepositoryQueryPage extends AbstractRepositoryQueryPage {
 	/**
 	 * @see org.eclipse.mylyn.tasks.ui.wizards.AbstractRepositoryQueryPage#applyTo(org.eclipse.mylyn.tasks.core.IRepositoryQuery)
 	 */
+	@Override
 	public void applyTo(IRepositoryQuery query) {
 		query.setSummary(getQueryTitle());
 		query.setAttribute(IGistQueryConstants.USER, userText.getText().trim());

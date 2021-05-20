@@ -1,9 +1,11 @@
 /*******************************************************************************
  *  Copyright (c) 2011 GitHub Inc.
  *  All rights reserved. This program and the accompanying materials
- *  are made available under the terms of the Eclipse Public License v1.0
+ *  are made available under the terms of the Eclipse Public License 2.0
  *  which accompanies this distribution, and is available at
- *  http://www.eclipse.org/legal/epl-v10.html
+ *  https://www.eclipse.org/legal/epl-2.0/
+ *
+ *  SPDX-License-Identifier: EPL-2.0
  *
  *  Contributors:
  *    Kevin Sawicki (GitHub Inc.) - initial API and implementation
@@ -77,6 +79,7 @@ public class SearchRepository implements IRepositoryIdProvider, Serializable {
 	/**
 	 * @see java.lang.Object#hashCode()
 	 */
+	@Override
 	public int hashCode() {
 		return getId().hashCode();
 	}
@@ -84,6 +87,7 @@ public class SearchRepository implements IRepositoryIdProvider, Serializable {
 	/**
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
+	@Override
 	public boolean equals(Object obj) {
 		if (obj == this)
 			return true;
@@ -96,6 +100,7 @@ public class SearchRepository implements IRepositoryIdProvider, Serializable {
 	/**
 	 * @see java.lang.Object#toString()
 	 */
+	@Override
 	public String toString() {
 		return getId();
 	}
@@ -228,6 +233,7 @@ public class SearchRepository implements IRepositoryIdProvider, Serializable {
 		return watchers;
 	}
 
+	@Override
 	public String generateId() {
 		final String owner = this.owner;
 		if (owner == null || owner.length() == 0)

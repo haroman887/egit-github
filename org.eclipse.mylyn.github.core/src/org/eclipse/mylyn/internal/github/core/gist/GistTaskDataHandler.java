@@ -1,9 +1,11 @@
 /*******************************************************************************
- *  Copyright (c) 2011 GitHub Inc.
+ *  Copyright (c) 2011, 2020 GitHub Inc. and others
  *  All rights reserved. This program and the accompanying materials
- *  are made available under the terms of the Eclipse Public License v1.0
+ *  are made available under the terms of the Eclipse Public License 2.0
  *  which accompanies this distribution, and is available at
- *  http://www.eclipse.org/legal/epl-v10.html
+ *  https://www.eclipse.org/legal/epl-2.0/
+ *
+ *  SPDX-License-Identifier: EPL-2.0
  *
  *  Contributors:
  *    Kevin Sawicki (GitHub Inc.) - initial API and implementation
@@ -138,9 +140,9 @@ public class GistTaskDataHandler extends GitHubTaskDataHandler {
 				sizeCount += file.getSize();
 				TaskAttachmentMapper attachmentMapper = new TaskAttachmentMapper();
 				attachmentMapper.setFileName(file.getFilename());
-				attachmentMapper.setReplaceExisting(true);
-				attachmentMapper.setLength((long) file.getSize());
-				attachmentMapper.setPatch(false);
+				attachmentMapper.setReplaceExisting(Boolean.TRUE);
+				attachmentMapper.setLength(Long.valueOf(file.getSize()));
+				attachmentMapper.setPatch(Boolean.FALSE);
 				attachmentMapper.setAuthor(reporterPerson);
 				attachmentMapper.setAttachmentId(file.getFilename());
 				TaskAttribute attribute = data.getRoot().createAttribute(
@@ -166,34 +168,40 @@ public class GistTaskDataHandler extends GitHubTaskDataHandler {
 
 	private String generateSummary(int files, long size, String description) {
 		StringBuilder summaryText = new StringBuilder();
-		if (description != null && description.length() > 0) {
-			description = description.trim();
-			int firstLine = description.indexOf('\n');
-			if (firstLine != -1)
-				description = description.substring(0, firstLine).trim();
-			if (description.length() > SUMMARY_LENGTH) {
+		if (description != null && !description.isEmpty()) {
+			String desc = description.trim();
+			int firstLine = desc.indexOf('\n');
+			if (firstLine != -1) {
+				desc = desc.substring(0, firstLine).trim();
+			}
+			if (desc.length() > SUMMARY_LENGTH) {
 				// Break on last whitespace if maximum length is in the middle
 				// of a word
-				if (!Character.isWhitespace(description.charAt(SUMMARY_LENGTH))
-						&& !Character.isWhitespace(description
+				if (!Character.isWhitespace(desc.charAt(SUMMARY_LENGTH))
+						&& !Character.isWhitespace(desc
 								.charAt(SUMMARY_LENGTH - 1))) {
-					int lastWhitespace = description.lastIndexOf(' ');
-					if (lastWhitespace > 0)
-						description = description.substring(0, lastWhitespace);
-					else
-						description = description.substring(0, SUMMARY_LENGTH);
-				} else
-					description = description.substring(0, SUMMARY_LENGTH);
-				description = description.trim();
+					int lastWhitespace = desc.lastIndexOf(' ');
+					if (lastWhitespace > 0) {
+						desc = desc.substring(0, lastWhitespace);
+					} else {
+						desc = desc.substring(0, SUMMARY_LENGTH);
+					}
+				} else {
+					desc = desc.substring(0, SUMMARY_LENGTH);
+				}
+				desc = desc.trim();
 			}
-			if (description.length() > 0)
+			if (!desc.isEmpty()) {
 				summaryText.append(description).append(' ');
+			}
 		}
-		if (files != 1)
+		if (files != 1) {
 			summaryText.append(MessageFormat.format(
-					Messages.GistTaskDataHandler_FilesMultiple, files));
-		else
+					Messages.GistTaskDataHandler_FilesMultiple,
+					Integer.valueOf(files)));
+		} else {
 			summaryText.append(Messages.GistTaskDataHandler_FilesSingle);
+		}
 		summaryText.append(',').append(' ').append(formatSize(size));
 		return summaryText.toString();
 	}
@@ -220,6 +228,7 @@ public class GistTaskDataHandler extends GitHubTaskDataHandler {
 	 *      org.eclipse.mylyn.tasks.core.data.TaskData, java.util.Set,
 	 *      org.eclipse.core.runtime.IProgressMonitor)
 	 */
+	@Override
 	public RepositoryResponse postTaskData(TaskRepository repository,
 			TaskData taskData, Set<TaskAttribute> oldAttributes,
 			IProgressMonitor monitor) throws CoreException {
@@ -230,9 +239,14 @@ public class GistTaskDataHandler extends GitHubTaskDataHandler {
 		AuthenticationCredentials credentials = repository
 				.getCredentials(AuthenticationType.REPOSITORY);
 		if (credentials != null) {
-			client.setCredentials(credentials.getUserName(),
-					credentials.getPassword());
-			gist.setUser(new User().setLogin(credentials.getUserName()));
+			if (Boolean.parseBoolean(
+					repository.getProperty(GitHub.PROPERTY_USE_TOKEN))) {
+				client.setOAuth2Token(credentials.getPassword());
+			} else {
+				client.setCredentials(credentials.getUserName(),
+						credentials.getPassword());
+			}
+			gist.setOwner(new User().setLogin(credentials.getUserName()));
 		}
 
 		GistService service = new GistService(client);
@@ -275,6 +289,7 @@ public class GistTaskDataHandler extends GitHubTaskDataHandler {
 	 *      org.eclipse.mylyn.tasks.core.ITaskMapping,
 	 *      org.eclipse.core.runtime.IProgressMonitor)
 	 */
+	@Override
 	public boolean initializeTaskData(TaskRepository repository, TaskData data,
 			ITaskMapping initializationData, IProgressMonitor monitor)
 			throws CoreException {

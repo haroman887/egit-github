@@ -1,9 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2011 Red Hat and others.
+ * Copyright (c) 2011, 2020 Red Hat and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     David Green <david.green@tasktop.com> - initial contribution
@@ -37,22 +39,26 @@ public class GitHub {
 	/** CONNECTOR_KIND */
 	public static final String CONNECTOR_KIND = "github"; //$NON-NLS-1$
 
-	/** HTTP_WWW_GITHUB_ORG */
-	public static final String HTTP_WWW_GITHUB_ORG = "http://www.github.org"; //$NON-NLS-1$
-
 	/** HTTP_GITHUB_COM */
-	public static final String HTTP_GITHUB_COM = "http://github.com"; //$NON-NLS-1$
+	public static final String HTTPS_GITHUB_COM = "https://github.com"; //$NON-NLS-1$
 
 	/** URL_PATTERN */
-	public static final Pattern URL_PATTERN = Pattern.compile("(?:" //$NON-NLS-1$
-			+ Pattern.quote(HTTP_WWW_GITHUB_ORG) + "|" //$NON-NLS-1$
-			+ Pattern.quote(HTTP_GITHUB_COM) + ")/([^/]+)/([^/]+)"); //$NON-NLS-1$
+	public static final Pattern URL_PATTERN = Pattern
+			.compile("https?://github.com/([^/]+)/([^/]+)"); //$NON-NLS-1$
 
 	/** USER_AGENT */
 	public static final String USER_AGENT = "GitHubEclipse/1.3.0"; //$NON-NLS-1$
 
 	/** REPOSITORY_SEGMENTS */
 	public static final String REPOSITORY_SEGMENTS = "/user/repository"; //$NON-NLS-1$
+
+	/**
+	 * Key for a repository property storing a stringified boolean ("true" or
+	 * "false") telling whether to use token authentication for a Mylyn task
+	 * repository.
+	 */
+	public static final String PROPERTY_USE_TOKEN = GitHub.class.getPackage()
+			.getName() + ".REPO_USE_TOKEN"; //$NON-NLS-1$
 
 	/**
 	 * Configure client with standard configuration
@@ -75,9 +81,15 @@ public class GitHub {
 			TaskRepository repository) {
 		AuthenticationCredentials credentials = repository
 				.getCredentials(AuthenticationType.REPOSITORY);
-		if (credentials != null)
-			client.setCredentials(credentials.getUserName(),
-					credentials.getPassword());
+		if (credentials != null) {
+			if (Boolean
+					.parseBoolean(repository.getProperty(PROPERTY_USE_TOKEN))) {
+				client.setOAuth2Token(credentials.getPassword());
+			} else {
+				client.setCredentials(credentials.getUserName(),
+						credentials.getPassword());
+			}
+		}
 		return client;
 	}
 
@@ -192,22 +204,8 @@ public class GitHub {
 	 * @param project
 	 * @return url
 	 *
-	 * @see #createGitHubUrlAlternate(String, String)
 	 */
 	public static String createGitHubUrl(String user, String project) {
-		return HTTP_GITHUB_COM + '/' + user + '/' + project;
-	}
-
-	/**
-	 * Create url with github.org host
-	 *
-	 * @param user
-	 * @param project
-	 * @return url
-	 *
-	 * @see #createGitHubUrl(String, String)
-	 */
-	public static String createGitHubUrlAlternate(String user, String project) {
-		return HTTP_WWW_GITHUB_ORG + '/' + user + '/' + project;
+		return HTTPS_GITHUB_COM + '/' + user + '/' + project;
 	}
 }

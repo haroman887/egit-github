@@ -1,9 +1,11 @@
 /******************************************************************************
  *  Copyright (c) 2011 GitHub Inc.
  *  All rights reserved. This program and the accompanying materials
- *  are made available under the terms of the Eclipse Public License v1.0
+ *  are made available under the terms of the Eclipse Public License 2.0
  *  which accompanies this distribution, and is available at
- *  http://www.eclipse.org/legal/epl-v10.html
+ *  https://www.eclipse.org/legal/epl-2.0/
+ *
+ *  SPDX-License-Identifier: EPL-2.0
  *
  *  Contributors:
  *    Kevin Sawicki (GitHub Inc.) - initial API and implementation
@@ -50,7 +52,13 @@ public class Repository implements IRepositoryIdProvider, Serializable {
 
 	private int size;
 
+	/** Legacy field, kept for backwards compatibility. It's actually the stargazersCount. */
 	private int watchers;
+
+	private int stargazersCount;
+
+	/** This is what GitHub shows as "watchers". */
+	private int subscribersCount = -1;
 
 	private Repository parent;
 
@@ -243,10 +251,29 @@ public class Repository implements IRepositoryIdProvider, Serializable {
 	}
 
 	/**
+	 * @return stars
+	 * @since 5.0
+	 */
+	public int getStars() {
+		return stargazersCount;
+	}
+
+	/**
+	 * @param stars
+	 * @return this repository
+	 * @since 5.0
+	 */
+	public Repository setStars(int stars) {
+		this.stargazersCount = stars;
+		return this;
+	}
+
+	/**
 	 * @return watchers
 	 */
 	public int getWatchers() {
-		return watchers;
+		// Account for legacy serializations that had only the watchers field
+		return subscribersCount < 0 ? watchers : subscribersCount;
 	}
 
 	/**
@@ -254,7 +281,7 @@ public class Repository implements IRepositoryIdProvider, Serializable {
 	 * @return this repository
 	 */
 	public Repository setWatchers(int watchers) {
-		this.watchers = watchers;
+		this.subscribersCount = watchers;
 		return this;
 	}
 
@@ -403,24 +430,6 @@ public class Repository implements IRepositoryIdProvider, Serializable {
 	}
 
 	/**
-	 * @return masterBranch
-	*/
-	@Deprecated
-	public String getMasterBranch() {
-		return defaultBranch;
-	}
-
-	/**
-	 * @param masterBranch
-	 * @return this repository
-	 */
-	@Deprecated
-	public Repository setMasterBranch(String masterBranch) {
-		this.defaultBranch = masterBranch;
-		return this;
-	}
-
-	/**
 	 * @return mirrorUrl
 	 */
 	public String getMirrorUrl() {
@@ -553,6 +562,7 @@ public class Repository implements IRepositoryIdProvider, Serializable {
 	 *
 	 * @see IRepositoryIdProvider#generateId()
 	 */
+	@Override
 	public String generateId() {
 		final User owner = this.owner;
 		final String name = this.name;

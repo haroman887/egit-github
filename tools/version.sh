@@ -1,11 +1,14 @@
 #!/bin/sh
 # Copyright (C) 2009, Google Inc.
 # Copyright (C) 2011, Matthias Sohn <matthias.sohn@sap.com>
+# Copyright (C) 2019, Thomas Wolf <thomas.wolf@paranor.ch>
 #
 # All rights reserved. This program and the accompanying materials
-# are made available under the terms of the Eclipse Public License v1.0
+# are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
-# http://www.eclipse.org/legal/epl-v10.html
+# https://www.eclipse.org/legal/epl-2.0/
+#
+# SPDX-License-Identifier: EPL-2.0
 
 # Update all pom.xml with new build number
 #
@@ -99,6 +102,9 @@ perl -pi~ -e '
 	s/(org.eclipse.egit.github.*;version="\[)[^"]*(\)")/${1}'"$GITHUB_V,$GITHUB_N"'${2}/;
 	s/(org.eclipse.mylyn.internal.github.*;version=")[^"[(]*(")/${1}'"$GITHUB_V"'${2}/;
 	s/(org.eclipse.mylyn.internal.github.*;version="\[)[^"]*(\)")/${1}'"$GITHUB_V,$GITHUB_N"'${2}/;
+	s/(org.eclipse.jgit.*;version="\[)[^"]*(\)")/${1}'"$GITHUB_V,$GITHUB_N"'${2}/;
+	s/(org.eclipse.egit.core.*;version="\[)[^"]*(\)")/${1}'"$GITHUB_V,$GITHUB_N"'${2}/;
+	s/(org.eclipse.egit.ui.*;version="\[)[^"]*(\)")/${1}'"$GITHUB_V,$GITHUB_N"'${2}/;
 	' $(git ls-files | egrep "META-INF/MANIFEST.MF|META-INF/SOURCE-MANIFEST.MF")
 
 perl -pi~ -e '
@@ -110,9 +116,7 @@ perl -pi~ -e '
 		$seen_version = 1 if (!/<\?xml/ &&
 		s/(version=")[^"]*(")/${1}'"$OSGI_V"'${2}/);
 	}
-	s/(feature="org.eclipse.egit.github.core" version=")[^"]*(")/${1}'"$GITHUB_V"'${2}/;
-	s/(feature="org.eclipse.mylyn.github.core" version=")[^"]*(")/${1}'"$GITHUB_V"'${2}/;
-	s/(feature="org.eclipse.mylyn.github.ui" version=")[^"]*(")/${1}'"$GITHUB_V"'${2}/;
+	s/(feature="org.eclipse.egit" version=")[^"]*(")/${1}'"$GITHUB_V"'${2}/;
 	' org.eclipse.mylyn.github-feature/feature.xml
 
 perl -pi~ -e '
@@ -128,7 +132,7 @@ perl -pi~ -e '
 		$seen_version = 1 if
 		s{<(version)>[^<\$]*</\1>}{<${1}>'"$POM_V"'</${1}>};
 	}
-	s{<(egit-version)>[^<\$]*</\1>}{<${1}>'"$POM_V"'</${1}>};
+	s{<(egit-github-version)>[^<\$]*</\1>}{<${1}>'"$POM_V"'</${1}>};
 	' pom.xml
 
 perl -pi~ -e '

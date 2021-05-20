@@ -1,9 +1,11 @@
 /******************************************************************************
  *  Copyright (c) 2011 GitHub Inc.
  *  All rights reserved. This program and the accompanying materials
- *  are made available under the terms of the Eclipse Public License v1.0
+ *  are made available under the terms of the Eclipse Public License 2.0
  *  which accompanies this distribution, and is available at
- *  http://www.eclipse.org/legal/epl-v10.html
+ *  https://www.eclipse.org/legal/epl-2.0/
+ *
+ *  SPDX-License-Identifier: EPL-2.0
  *
  *  Contributors:
  *    Kevin Sawicki (GitHub Inc.) - initial API and implementation
@@ -43,6 +45,7 @@ public class RebasePullRequestHandler extends TaskDataHandler {
 	 */
 	public static final String ID = "org.eclipse.mylyn.github.ui.command.rebasePullRequest"; //$NON-NLS-1$
 
+	@Override
 	public Object execute(final ExecutionEvent event) throws ExecutionException {
 		final TaskData data = getTaskData(event);
 		if (data == null)
@@ -50,6 +53,7 @@ public class RebasePullRequestHandler extends TaskDataHandler {
 		Job job = new Job(MessageFormat.format(
 				Messages.RebasePullRequestHandler_RebaseJob, data.getTaskId())) {
 
+			@Override
 			protected IStatus run(IProgressMonitor monitor) {
 				PullRequestComposite prComp = PullRequestConnector
 						.getPullRequest(data);
@@ -62,7 +66,7 @@ public class RebasePullRequestHandler extends TaskDataHandler {
 				String branchName = PullRequestUtils.getBranchName(request);
 				try {
 					String target = request.getBase().getRef();
-					Ref targetRef = repo.getRef(request.getBase().getRef());
+					Ref targetRef = repo.findRef(request.getBase().getRef());
 					if (targetRef != null) {
 						if (!PullRequestUtils.isCurrentBranch(branchName, repo)) {
 							monitor.setTaskName(MessageFormat

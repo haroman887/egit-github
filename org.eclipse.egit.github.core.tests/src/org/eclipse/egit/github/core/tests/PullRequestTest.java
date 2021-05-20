@@ -1,9 +1,11 @@
 /*******************************************************************************
  *  Copyright (c) 2011 Christian Trutz
  *  All rights reserved. This program and the accompanying materials
- *  are made available under the terms of the Eclipse Public License v1.0
+ *  are made available under the terms of the Eclipse Public License 2.0
  *  which accompanies this distribution, and is available at
- *  http://www.eclipse.org/legal/epl-v10.html
+ *  https://www.eclipse.org/legal/epl-2.0/
+ *
+ *  SPDX-License-Identifier: EPL-2.0
  *
  *  Contributors:
  *    Christian Trutz - initial API and implementation
@@ -16,7 +18,9 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 import org.eclipse.egit.github.core.Milestone;
 import org.eclipse.egit.github.core.PullRequest;
@@ -35,7 +39,8 @@ public class PullRequestTest {
 	@Test
 	public void defaultState() {
 		PullRequest request = new PullRequest();
-		assertFalse(request.isMergeable());
+		assertNull(request.isMergeable());
+		assertNull(request.getMergeableState());
 		assertFalse(request.isMerged());
 		assertEquals(0, request.getAdditions());
 		assertNull(request.getBase());
@@ -66,6 +71,7 @@ public class PullRequestTest {
 		assertEquals(0, request.getId());
 		assertNull(request.getMilestone());
 		assertNull(request.getAssignee());
+		assertNull(request.getAssignees());
 	}
 
 	/**
@@ -76,6 +82,8 @@ public class PullRequestTest {
 		PullRequest request = new PullRequest();
 		assertTrue(request.setMerged(true).isMerged());
 		assertTrue(request.setMergeable(true).isMergeable());
+		assertEquals("clean", request.setMergeableState("clean")
+				.getMergeableState());
 		assertEquals(15, request.setAdditions(15).getAdditions());
 		PullRequestMarker base = new PullRequestMarker();
 		assertEquals(base, request.setBase(base).getBase());
@@ -117,6 +125,9 @@ public class PullRequestTest {
 		assertEquals(assignee, request.setAssignee(assignee).getAssignee());
 		Milestone milestone = new Milestone().setNumber(456);
 		assertEquals(milestone, request.setMilestone(milestone).getMilestone());
+
+		List<User> assigneeList = Arrays.asList(assignee);
+		assertEquals(assigneeList, request.setAssignees(Arrays.asList(assignee)).getAssignees());
 	}
 
 	/**

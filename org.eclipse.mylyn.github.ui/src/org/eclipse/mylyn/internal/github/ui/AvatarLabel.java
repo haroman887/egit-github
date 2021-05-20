@@ -1,9 +1,11 @@
 /*******************************************************************************
  *  Copyright (c) 2011 GitHub Inc.
  *  All rights reserved. This program and the accompanying materials
- *  are made available under the terms of the Eclipse Public License v1.0
+ *  are made available under the terms of the Eclipse Public License 2.0
  *  which accompanies this distribution, and is available at
- *  http://www.eclipse.org/legal/epl-v10.html
+ *  https://www.eclipse.org/legal/epl-2.0/
+ *
+ *  SPDX-License-Identifier: EPL-2.0
  *
  *  Contributors:
  *    Kevin Sawicki (GitHub Inc.) - initial API and implementation
@@ -132,6 +134,7 @@ public class AvatarLabel implements IAvatarCallback {
 			avatarImage.setBackgroundImage(image);
 			avatarImage.addDisposeListener(new DisposeListener() {
 
+				@Override
 				public void widgetDisposed(DisposeEvent e) {
 					image.dispose();
 				}
@@ -144,9 +147,11 @@ public class AvatarLabel implements IAvatarCallback {
 	 * @see org.eclipse.mylyn.internal.github.ui.AvatarStore.IAvatarCallback#loaded(org.eclipse.swt.graphics.ImageData,
 	 *      org.eclipse.mylyn.internal.github.ui.AvatarStore)
 	 */
+	@Override
 	public void loaded(final ImageData data, final AvatarStore store) {
 		PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
 
+			@Override
 			public void run() {
 				Image image = store.getScaledImage(AVATAR_SIZE, data);
 				setImage(image).setVisible(true).layout();

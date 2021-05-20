@@ -1,9 +1,11 @@
 /*******************************************************************************
  *  Copyright (c) 2011 GitHub Inc.
  *  All rights reserved. This program and the accompanying materials
- *  are made available under the terms of the Eclipse Public License v1.0
+ *  are made available under the terms of the Eclipse Public License 2.0
  *  which accompanies this distribution, and is available at
- *  http://www.eclipse.org/legal/epl-v10.html
+ *  https://www.eclipse.org/legal/epl-2.0/
+ *
+ *  SPDX-License-Identifier: EPL-2.0
  *
  *  Contributors:
  *    Kevin Sawicki (GitHub Inc.) - initial API and implementation
@@ -32,6 +34,7 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
  * Issue summary task editor part modeled after {@link TaskEditorSummaryPart}
  * but displaying reporter and assignee avatar images.
  */
+@SuppressWarnings("restriction")
 public class IssueSummaryPart extends AbstractTaskEditorPart {
 
 	/**
@@ -47,7 +50,7 @@ public class IssueSummaryPart extends AbstractTaskEditorPart {
 
 	/**
 	 * Create issue summary part
-	 * 
+	 *
 	 * @param reporterAvatarId
 	 * @param assigneeAvatarId
 	 */
@@ -148,10 +151,11 @@ public class IssueSummaryPart extends AbstractTaskEditorPart {
 
 	/**
 	 * Create control
-	 * 
+	 *
 	 * @param parent
 	 * @param toolkit
 	 */
+	@Override
 	public void createControl(Composite parent, FormToolkit toolkit) {
 		Composite composite = toolkit.createComposite(parent);
 		GridLayout layout = EditorUtil.createSectionClientLayout();
@@ -230,6 +234,7 @@ public class IssueSummaryPart extends AbstractTaskEditorPart {
 	/**
 	 * @see org.eclipse.ui.forms.AbstractFormPart#setFocus()
 	 */
+	@Override
 	public void setFocus() {
 		if (summaryEditor != null)
 			summaryEditor.getControl().setFocus();

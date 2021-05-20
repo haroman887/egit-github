@@ -1,9 +1,11 @@
 /*******************************************************************************
  * Copyright (c) 2011 Red Hat and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     Chris Aniszczyk <caniszczyk@gmail.com> - initial contribution
@@ -30,6 +32,7 @@ import org.eclipse.ui.PlatformUI;
 /**
  * Create Gist job class
  */
+@SuppressWarnings("restriction")
 public class CreateGistJob extends Job {
 
 	private String title;
@@ -59,7 +62,6 @@ public class CreateGistJob extends Job {
 	}
 
 	@Override
-	@SuppressWarnings("restriction")
 	protected IStatus run(IProgressMonitor monitor) {
 		try {
 			Gist gist = new Gist().setPublic(isPublic);
@@ -70,6 +72,7 @@ public class CreateGistJob extends Job {
 			final Display display = PlatformUI.getWorkbench().getDisplay();
 			display.asyncExec(new Runnable() {
 
+				@Override
 				public void run() {
 					GistNotificationPopup popup = new GistNotificationPopup(
 							display, created, title, repository);

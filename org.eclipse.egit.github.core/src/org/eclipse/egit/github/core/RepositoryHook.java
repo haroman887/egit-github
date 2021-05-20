@@ -1,9 +1,11 @@
 /******************************************************************************
  *  Copyright (c) 2011 GitHub Inc.
  *  All rights reserved. This program and the accompanying materials
- *  are made available under the terms of the Eclipse Public License v1.0
+ *  are made available under the terms of the Eclipse Public License 2.0
  *  which accompanies this distribution, and is available at
- *  http://www.eclipse.org/legal/epl-v10.html
+ *  https://www.eclipse.org/legal/epl-2.0/
+ *
+ *  SPDX-License-Identifier: EPL-2.0
  *
  *  Contributors:
  *    Kevin Sawicki (GitHub Inc.) - initial API and implementation
@@ -12,6 +14,7 @@ package org.eclipse.egit.github.core;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 import org.eclipse.egit.github.core.util.DateUtils;
@@ -39,6 +42,8 @@ public class RepositoryHook implements Serializable {
 	private String url;
 
 	private Map<String, String> config;
+
+	private List<String> events;
 
 	/**
 	 * @return active
@@ -165,6 +170,22 @@ public class RepositoryHook implements Serializable {
 	 */
 	public RepositoryHook setConfig(Map<String, String> config) {
 		this.config = config;
+		return this;
+	}
+
+	/**
+	 * @return events
+	 */
+	public List<String> getEvents() {
+		return events;
+	}
+
+	/**
+	 * @param events
+	 * @return this hook
+	 */
+	public RepositoryHook setEvents(List<String> events) {
+		this.events = events;
 		return this;
 	}
 }

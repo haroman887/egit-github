@@ -1,9 +1,11 @@
 /*******************************************************************************
  * Copyright (c) 2011 Red Hat and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     David Green <david.green@tasktop.com> - initial contribution
@@ -240,7 +242,7 @@ public class IssueTaskDataHandler extends GitHubTaskDataHandler {
 			IssueAttribute attribute, List<Label> values) {
 		TaskAttribute attr = createAttribute(data, attribute.getMetadata());
 		if (values != null) {
-			List<String> labels = new ArrayList<String>(values.size());
+			List<String> labels = new ArrayList<>(values.size());
 			for (Label label : values)
 				labels.add(label.getName());
 			data.getAttributeMapper().setValues(attr, labels);
@@ -289,8 +291,8 @@ public class IssueTaskDataHandler extends GitHubTaskDataHandler {
 					// Ignore
 				}
 			List<Label> currentLabels = connector.getLabels(repository);
-			List<Label> newLabels = new LinkedList<Label>();
-			List<Label> labels = new LinkedList<Label>();
+			List<Label> newLabels = new LinkedList<>();
+			List<Label> labels = new LinkedList<>();
 			for (String value : labelsAttribute.getValues()) {
 				Label label = new Label().setName(value);
 				if (!currentLabels.contains(label))

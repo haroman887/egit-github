@@ -1,9 +1,11 @@
 /*******************************************************************************
  *  Copyright (c) 2011 GitHub Inc.
  *  All rights reserved. This program and the accompanying materials
- *  are made available under the terms of the Eclipse Public License v1.0
+ *  are made available under the terms of the Eclipse Public License 2.0
  *  which accompanies this distribution, and is available at
- *  http://www.eclipse.org/legal/epl-v10.html
+ *  https://www.eclipse.org/legal/epl-2.0/
+ *
+ *  SPDX-License-Identifier: EPL-2.0
  *
  *  Contributors:
  *    Kevin Sawicki (GitHub Inc.) - initial API and implementation
@@ -12,6 +14,7 @@ package org.eclipse.egit.github.core;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 import org.eclipse.egit.github.core.util.DateUtils;
 
@@ -23,7 +26,9 @@ public class PullRequest implements Serializable {
 	/** serialVersionUID */
 	private static final long serialVersionUID = 7858604768525096763L;
 
-	private boolean mergeable;
+	private Boolean mergeable;
+
+	private String mergeableState;
 
 	private boolean merged;
 
@@ -83,10 +88,21 @@ public class PullRequest implements Serializable {
 
 	private User user;
 
+	private List<User> assignees;
+
 	/**
-	 * @return mergeable
+	 * Tells whether the pull request can be merged. The value may be
+	 * {@code null}, which indicates that GitHub is busy computing this
+	 * information but hasn't determined it yet.
+	 *
+	 * @return whether the pull request is mergeable, or {@code null} if not
+	 *         known yet and GitHub is busy calculating the mergeability.
+	 *
+	 * @see <a href=
+	 *      "https://developer.github.com/v3/pulls/#get-a-single-pull-request">GitHub
+	 *      Rest API v3: Pull Requests</a>
 	 */
-	public boolean isMergeable() {
+	public Boolean isMergeable() {
 		return mergeable;
 	}
 
@@ -94,8 +110,24 @@ public class PullRequest implements Serializable {
 	 * @param mergeable
 	 * @return this pull request
 	 */
-	public PullRequest setMergeable(boolean mergeable) {
+	public PullRequest setMergeable(Boolean mergeable) {
 		this.mergeable = mergeable;
+		return this;
+	}
+
+	/**
+	 * @return mergeableState
+	 */
+	public String getMergeableState() {
+		return mergeableState;
+	}
+
+	/**
+	 * @param mergeableState
+	 * @return this pull request
+	 */
+	public PullRequest setMergeableState(String mergeableState) {
+		this.mergeableState = mergeableState;
 		return this;
 	}
 
@@ -563,6 +595,24 @@ public class PullRequest implements Serializable {
 	public PullRequest setAssignee(User assignee) {
 		this.assignee = assignee;
 		return this;
+	}
+
+	/**
+	 *
+	 * @param assignees
+	 * @return this pull request
+	 */
+	public PullRequest setAssignees(List<User> assignees) {
+		this.assignees = assignees;
+		return this;
+	}
+
+	/**
+	 *
+	 * @return assignees
+	 */
+	public List<User> getAssignees() {
+		return assignees;
 	}
 
 	@Override

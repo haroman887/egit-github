@@ -1,9 +1,11 @@
 /******************************************************************************
  *  Copyright (c) 2011 GitHub Inc.
  *  All rights reserved. This program and the accompanying materials
- *  are made available under the terms of the Eclipse Public License v1.0
+ *  are made available under the terms of the Eclipse Public License 2.0
  *  which accompanies this distribution, and is available at
- *  http://www.eclipse.org/legal/epl-v10.html
+ *  https://www.eclipse.org/legal/epl-2.0/
+ *
+ *  SPDX-License-Identifier: EPL-2.0
  *
  *  Contributors:
  *    Kevin Sawicki (GitHub Inc.) - initial API and implementation
@@ -14,8 +16,8 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 
-import org.eclipse.egit.core.Activator;
 import org.eclipse.egit.core.RepositoryCache;
+import org.eclipse.egit.core.RepositoryUtil;
 import org.eclipse.egit.github.core.PullRequest;
 import org.eclipse.egit.github.core.PullRequestMarker;
 import org.eclipse.egit.github.core.User;
@@ -70,8 +72,8 @@ public abstract class PullRequestUtils {
 				.getRepo();
 		String id = remoteRepo.getOwner().getLogin() + '/'
 				+ remoteRepo.getName() + Constants.DOT_GIT;
-		RepositoryCache cache = Activator.getDefault().getRepositoryCache();
-		for (String path : Activator.getDefault().getRepositoryUtil()
+		RepositoryCache cache = RepositoryCache.getInstance();
+		for (String path : RepositoryUtil.getInstance()
 				.getConfiguredRepositories())
 			try {
 				Repository repo = cache.lookupRepository(new File(path));
@@ -228,7 +230,7 @@ public abstract class PullRequestUtils {
 	 */
 	public static String getHeadBranch(PullRequest request) {
 		PullRequestMarker head = request.getHead();
-		return Constants.R_REMOTES + head.getRepo().getOwner().getLogin() + "/"
+		return Constants.R_REMOTES + head.getRepo().getOwner().getLogin() + '/'
 				+ head.getRef();
 	}
 }
